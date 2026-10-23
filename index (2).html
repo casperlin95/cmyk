@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>တံဆိပ်ရိုက် Color Separation</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;
+--bg:#06070d;--card:rgba(17,19,36,.74);--ink:#eef1ff;--mute:#9aa2c6;--line:rgba(255,255,255,.1);--acc:#19c3ff;--mag:#ff2fa6;--yel:#ffe83d;--chk:#0d0f1c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:'Sora','Noto Sans Myanmar',system-ui,sans-serif;line-height:1.7;background-color:var(--bg);
+background-image:radial-gradient(60% 50% at 6% 0%,rgba(25,195,255,.30),transparent 70%),radial-gradient(55% 45% at 96% 3%,rgba(255,47,166,.26),transparent 70%),radial-gradient(50% 40% at 50% 100%,rgba(255,232,61,.11),transparent 70%);background-attachment:fixed}
+main{max-width:1040px;margin:0 auto;padding:22px 16px 48px}
+.hero{padding:14px 0 20px}
+h1{font-size:clamp(1.6rem,5vw,2.5rem);line-height:1.3;margin:0 0 14px;font-weight:700;text-shadow:0 0 30px rgba(25,195,255,.5)}
+h1 span{background:linear-gradient(90deg,var(--acc),var(--mag) 62%,var(--yel));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 16px rgba(255,47,166,.5))}
+.ink{display:flex;gap:6px;max-width:340px;margin-bottom:14px}
+.ink i{flex:1;height:5px;border-radius:5px;animation:ignite 1.1s ease-out both}
+.ink i:nth-child(1){background:#19c3ff;box-shadow:0 0 16px #19c3ff}
+.ink i:nth-child(2){background:#ff2fa6;box-shadow:0 0 16px #ff2fa6;animation-delay:.15s}
+.ink i:nth-child(3){background:#ffe83d;box-shadow:0 0 16px #ffe83d;animation-delay:.3s}
+.ink i:nth-child(4){background:#dfe3ff;box-shadow:0 0 16px #dfe3ff;animation-delay:.45s}
+@keyframes ignite{from{opacity:0;transform:scaleX(.2)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.ink i{animation:none}}
+h2{font-size:1.05rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:4px;height:18px;border-radius:4px;background:linear-gradient(var(--acc),var(--mag));box-shadow:0 0 12px var(--acc);flex:none}
+.sub{margin:0 0 12px;color:var(--mute);font-size:.86rem}
+.hero .sub{font-size:.95rem;max-width:62ch}
+.panel{background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:18px;
+box-shadow:0 18px 50px -22px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.08),0 0 44px -18px rgba(25,195,255,.4)}
+.row{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:8px}
+label{font-size:.88rem}
+b{font-weight:600}
+input[type=file]{max-width:100%;font-family:inherit;color:var(--mute)}
+input[type=file]::file-selector-button{font-family:inherit;font-weight:600;color:var(--ink);background:rgba(25,195,255,.12);border:1px solid rgba(25,195,255,.5);border-radius:9px;padding:7px 14px;margin-right:12px;cursor:pointer;box-shadow:0 0 14px rgba(25,195,255,.3)}
+input[type=range]{vertical-align:middle;width:120px;accent-color:var(--acc)}
+input[type=checkbox]{accent-color:var(--mag)}
+input[type=number],select{font-family:inherit;background:rgba(6,8,18,.8);color:var(--ink);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:4px 8px}
+input[type=number]{width:72px}
+option{background:#12142a;color:var(--ink)}
+input[type=number]:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(25,195,255,.25),0 0 16px rgba(25,195,255,.35);outline:0}
+button{font-family:inherit;font-weight:700;border:0;border-radius:10px;padding:9px 18px;cursor:pointer;color:#fff;font-size:.9rem;background:linear-gradient(100deg,#0787c4,#6a5cff 55%,#e0208f);
+box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),0 0 20px rgba(25,195,255,.45),0 0 40px rgba(255,47,166,.25);transition:box-shadow .2s,filter .2s,transform .2s}
+button:hover:not(:disabled){filter:brightness(1.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),0 0 28px rgba(25,195,255,.7),0 0 56px rgba(255,47,166,.4)}
+button:active:not(:disabled){transform:translateY(1px)}
+button.alt{background:rgba(255,255,255,.03);color:var(--ink);box-shadow:none;border:1px solid rgba(25,195,255,.4)}
+button.alt:hover:not(:disabled){filter:none;border-color:var(--acc);box-shadow:0 0 18px rgba(25,195,255,.45)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button:disabled{opacity:.4;cursor:default;box-shadow:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+canvas{width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.14);border-radius:10px;background:var(--chk);box-shadow:0 0 30px -6px rgba(25,195,255,.3)}
+#src{cursor:crosshair}
+#comp{box-shadow:0 0 30px -6px rgba(255,47,166,.4)}
+.cap{font-size:.82rem;color:var(--mute);margin:0 0 8px}
+.pr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.pr:last-child{border-bottom:0}
+.pr input[type=color]{width:40px;height:32px;padding:0;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:none;box-shadow:0 0 12px rgba(255,255,255,.12)}
+.pr .cv{margin-left:auto;color:var(--acc);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.layer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;transition:box-shadow .25s,border-color .25s;box-shadow:0 12px 30px -16px #000}
+.layer:hover{border-color:rgba(25,195,255,.55);box-shadow:0 0 30px -4px rgba(25,195,255,.45)}
+.layer canvas{background:#fff;box-shadow:0 0 24px rgba(255,255,255,.14)}
+.layer .m{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:.85rem}
+.sw{width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.35);flex:none;box-shadow:0 0 14px rgba(255,255,255,.2)}
+.layer button{width:100%;padding:7px 10px;font-size:.85rem}
+#msg{color:var(--mute);font-size:.88rem;min-height:1.4em;margin-top:8px}
+
+body:not(.authed) main{display:none}
+body.authed #gate{display:none}
+#gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));overflow:auto;z-index:20}
+#gate .panel{width:100%;max-width:410px;margin:auto}
+#gate h1{font-size:1.5rem;margin-bottom:6px}
+#gate input[type=email],#gate input[type=password]{width:100%;font-family:inherit;background:rgba(6,8,18,.8);color:var(--ink);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:.95rem}
+#gate input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(25,195,255,.25),0 0 16px rgba(25,195,255,.35);outline:0}
+#gate button{width:100%;margin-bottom:8px}
+#gate .sep{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:.8rem;margin:12px 0}
+#gate .sep::before,#gate .sep::after{content:"";flex:1;height:1px;background:var(--line)}
+#gate .warn{font-size:.8rem;color:var(--yel);margin:0 0 10px}
+#gate a{color:var(--acc);font-size:.85rem;cursor:pointer}
+#gmsg{font-size:.88rem;min-height:1.4em;color:var(--mag);margin-top:6px}
+#userbar{justify-content:flex-end;margin-bottom:0}
+</style>
+</head>
+<body>
+<div id="gate"><div class="panel">
+<h1><span style="background:linear-gradient(90deg,var(--acc),var(--mag) 62%,var(--yel));-webkit-background-clip:text;background-clip:text;color:transparent">Color Separation</span></h1>
+<p class="sub">Admin ပေးထားသော Email နှင့် Password ဖြင့် ဝင်ပါ။ အကောင့် မရှိသေးလျှင် Admin ကို ဆက်သွယ်ပါ။</p>
+<input type="email" id="em" placeholder="Email (ဥပမာ name@gmail.com)" autocomplete="email">
+<input type="password" id="pw" placeholder="Password (အနည်းဆုံး ၆ လုံး)" autocomplete="current-password">
+<button id="li">ဝင်မည်</button>
+<a id="fg">Password မေ့နေပါသလား?</a>
+<div id="gmsg">စစ်ဆေးနေပါသည်…</div>
+</div></div>
+<main>
+<div id="userbar" class="row"><span id="uemail" class="sub" style="margin:0"></span><button class="alt" id="logout" style="padding:5px 12px">ထွက်မည်</button></div>
+<header class="hero">
+<h1>တံဆိပ်ရိုက် <span>Color Separation</span></h1>
+<div class="ink"><i></i><i></i><i></i><i></i></div>
+<p class="sub">ပုံကို Screen တစ်ခုစီအတွက် Film အဖြစ် ခွဲပါ။ CMYK နှင့် Spot Color နှစ်မျိုးလုံး ရပါသည်။ အားလုံး ဘရောက်ဇာထဲမှာပဲ လုပ်ပါသည်။</p>
+</header>
+
+<div class="panel">
+  <h2>၁။ ပုံနှင့် နည်းလမ်း</h2>
+  <div class="row"><input type="file" id="file" accept="image/*"></div>
+  <div class="row">
+    <label>နည်းလမ်း
+      <select id="md">
+        <option value="c">CMYK (ဓာတ်ပုံ၊ အရောင်အစုံ) — Screen ၄ ခု</option>
+        <option value="s">Spot Color (Logo၊ ပုံဆွဲ) — အရောင်ကိုယ်တိုင်ရွေး</option>
+      </select></label>
+    <label>ချောမွေ့မှု <b id="sv">0.5</b>px <input type="range" id="sm" min="0" max="3" step="0.5" value="0.5"></label>
+  </div>
+  <div class="row" id="optC">
+    <label>အနက်ရောင် (K) ပမာဏ <b id="bv">60</b>% <input type="range" id="bg" min="0" max="100" value="60"></label>
+  </div>
+  <div class="row" id="optS" hidden>
+    <label>အရောင်အရေအတွက် <b id="nv">4</b> <input type="range" id="n" min="2" max="10" value="4"></label>
+    <label>အရောင်တူပေါင်း <b id="mv">12</b> <input type="range" id="mg" min="0" max="40" value="12"></label>
+    <label><input type="checkbox" id="paper" checked> အဖြူ = စက္ကူ (မရိုက်)</label>
+  </div>
+  <p class="sub" id="hint">CMYK: ပုံကို Cyan, Magenta, Yellow, Black ၄ ခုခွဲပြီး Halftone အစက်နဲ့ ရိုက်ပါမယ်။ ဓာတ်ပုံနဲ့ အရောင်ကူးပြောင်းမှုများတဲ့ ပုံအတွက် ဒီနည်းက မူရင်းနဲ့ အနီးဆုံးပါ။ K ပမာဏများရင် Black Screen မှာ အနက်ပိုပါပြီး အရောင် ၃ ခုမှာ နည်းပါမယ်။</p>
+  <button id="go" disabled>ခွဲမည်</button>
+  <div id="msg">ပုံတစ်ပုံ ရွေးပါ။</div>
+</div>
+
+<div id="work" hidden>
+<div class="panel">
+  <h2>၂။ Screen များ (ထောင့်၊ ပမာဏ ပြင်ရန်)</h2>
+  <div id="pl"></div>
+  <p class="sub" style="margin:10px 0 0"><b>ထောင့် (°)</b> = Screen တစ်ခုချင်း၏ အစက်စီတန်းသည့် ထောင့်။ Screen တွေ ထောင့်တူနေရင် Moiré (ပွတ်ဆိုင်ပုံ) ဖြစ်လို့ ၃၀° ခန့် ခြားပါ (CMYK ပုံသေ: C 15, M 75, Y 0, K 45)။ <b>ပမာဏ %</b> = ၁၀၀ ထက်များရင် အရောင်ပိုရင့်၊ နည်းရင် ပိုပျော့။ မူရင်းနဲ့ ကွာနေရင် ဒီမှာ ညှိပါ။ Spot မှာ အရောင်ပေါ်နှိပ်ပြီး ပြင်၊ “ရိုက်” ဖြုတ်ရင် Film မထွက်ပါ။</p>
+</div>
+
+<div class="two">
+  <div class="panel"><div class="cap">မူရင်းပုံ (Spot မှာ နှိပ်ရင် အရောင်ထပ်ထည့်မည်)</div><canvas id="src"></canvas></div>
+  <div class="panel"><div class="cap">Print ထွက်လာမည့် ပုံစံ (နမူနာ)</div><canvas id="comp"></canvas></div>
+</div>
+
+<div class="panel">
+  <h2>၃။ Film ဆက်တင်</h2>
+  <div class="row">
+    <label>ပုံစံ <select id="ht"><option value="h">Halftone (အစက်)</option><option value="s">Solid (အနက်/အဖြူ သီးသန့်)</option></select></label>
+    <label>Dot အရွယ် (LPI) <input type="number" id="lpi" value="35" min="10" max="85"></label>
+    <label>အစက်ပုံသဏ္ဌာန် <select id="sh"><option value="c">စက်ဝိုင်း</option><option value="q">လေးထောင့်</option><option value="l">မျဉ်း</option></select></label>
+  </div>
+  <p class="sub">LPI နည်းလေ အစက်ကြီးလေ (ကြမ်း)၊ များလေ အစက်သေးလေ (ကောင်း)။ ဗိုင်းလိုင်း (mesh) ရဲ့ ၄ ပုံ ၁ ပုံခန့် (မျက်ဝန်း ၁၂၀ → LPI ၃၀ ခန့်) က လုံခြုံပါတယ်။ ပုံမှန်: ၂၅–၅၅။ <span id="pitch"></span></p>
+  <div class="row">
+    <label>စက္ကူ <select id="ori"><option value="p">A4 ဒေါင်လိုက်</option><option value="l">A4 အလျားလိုက်</option></select></label>
+    <label>ပုံအကျယ် mm <input type="number" id="wmm" value="0" min="0" max="270"> (0 = အပြည့်)</label>
+    <label>ဒေါင်းလုဒ် <select id="dpi"><option value="150">150 dpi</option><option value="300" selected>300 dpi</option></select></label>
+    <label><input type="checkbox" id="mk" checked> Registration marks</label>
+    <button class="alt" id="all">Film အားလုံး ဒေါင်းလုဒ်</button>
+  </div>
+</div>
+
+<h2>Film များ (အနက် = ရိုက်မည့်နေရာ)</h2>
+<div class="grid" id="layers"></div>
+</div>
+</main>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var img,W,H,N,D,LAB,M,PAL=[],TN=[],tm,prepped=false,ORDER=[],ANG=[45,15,75,0,30,60,105,90];
+var CM=[{n:'Cyan',c:[0,174,239],on:true,ang:15,g:100},{n:'Magenta',c:[236,0,140],on:true,ang:75,g:100},{n:'Yellow',c:[255,242,0],on:true,ang:0,g:100},{n:'Black',c:[0,0,0],on:true,ang:45,g:100}];
+['n:nv','sm:sv','mg:mv','bg:bv'].forEach(function(s){var p=s.split(':');$(p[0]).oninput=function(){$(p[1]).textContent=this.value}});
+function isSpot(){return $('md').value==='s'}
+function PL(){return isSpot()?PAL:CM}
+function lin(v){v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)}
+function ff(t){return t>.008856?Math.cbrt(t):7.787*t+16/116}
+function lab(r,g,b){r=lin(r);g=lin(g);b=lin(b);
+  var x=ff((.4124*r+.3576*g+.1805*b)/.95047),y=ff(.2126*r+.7152*g+.0722*b),z=ff((.0193*r+.1192*g+.9505*b)/1.08883);
+  return [116*y-16,500*(x-y),200*(y-z)]}
+function hex(c){return '#'+c.map(function(v){return ('0'+Math.round(v).toString(16)).slice(-2)}).join('')}
+function unhex(h){return [1,3,5].map(function(i){return parseInt(h.substr(i,2),16)})}
+
+$('file').onchange=function(e){
+  var f=e.target.files[0];if(!f)return;
+  var im=new Image();
+  im.onload=function(){img=im;prepped=false;$('go').disabled=false;$('msg').textContent='ပုံရပါပြီ ('+im.width+'×'+im.height+')။ “ခွဲမည်” ကို နှိပ်ပါ။'};
+  im.onerror=function(){$('msg').textContent='ပုံကို ဖတ်၍ မရပါ။'};
+  im.src=URL.createObjectURL(f);
+};
+function prep(){
+  var s=Math.min(1,900/Math.max(img.width,img.height));
+  W=Math.max(1,Math.round(img.width*s));H=Math.max(1,Math.round(img.height*s));N=W*H;
+  var c=document.createElement('canvas');c.width=W;c.height=H;
+  var x=c.getContext('2d',{willReadFrequently:true});
+  x.filter='blur('+$('sm').value+'px)';x.drawImage(img,0,0,W,H);
+  var id=x.getImageData(0,0,W,H);D=id.data;
+  LAB=new Float32Array(N*3);M=new Uint8Array(N);
+  var spot=isSpot();
+  for(var p=0;p<N;p++){if(D[p*4+3]>128){M[p]=1;if(spot){var l=lab(D[p*4],D[p*4+1],D[p*4+2]);LAB[p*3]=l[0];LAB[p*3+1]=l[1];LAB[p*3+2]=l[2]}}}
+  var sc=$('src');sc.width=W;sc.height=H;sc.getContext('2d').putImageData(id,0,0);
+  prepped=true;
+}
+function labAll(){for(var p=0;p<N;p++)if(M[p]){var l=lab(D[p*4],D[p*4+1],D[p*4+2]);LAB[p*3]=l[0];LAB[p*3+1]=l[1];LAB[p*3+2]=l[2]}}
+function auto(){
+  var k=+$('n').value,step=Math.max(1,Math.floor(N/20000)),pts=[],i,j;
+  for(i=0;i<N;i+=step)if(M[i])pts.push(i);
+  if(pts.length<k)return false;
+  var d2=new Float64Array(pts.length).fill(1e18),f=pts[Math.floor(Math.random()*pts.length)];
+  var ctr=[[LAB[f*3],LAB[f*3+1],LAB[f*3+2]]];
+  while(ctr.length<k){
+    var l=ctr[ctr.length-1],sum=0;
+    for(i=0;i<pts.length;i++){var q=pts[i]*3,a=LAB[q]-l[0],b=LAB[q+1]-l[1],e=LAB[q+2]-l[2],d=a*a+b*b+e*e;if(d<d2[i])d2[i]=d;sum+=d2[i]}
+    var r=Math.random()*sum,t=0;for(i=0;i<pts.length;i++){t+=d2[i];if(t>=r)break}
+    i=Math.min(i,pts.length-1);ctr.push([LAB[pts[i]*3],LAB[pts[i]*3+1],LAB[pts[i]*3+2]]);
+  }
+  var S;
+  for(var it=0;it<12;it++){
+    S=ctr.map(function(){return [0,0,0,0,0,0,0]});
+    for(i=0;i<pts.length;i++){
+      var q=pts[i]*3,bi=0,bd=1e18;
+      for(j=0;j<k;j++){var a=LAB[q]-ctr[j][0],b=LAB[q+1]-ctr[j][1],e=LAB[q+2]-ctr[j][2],d=a*a+b*b+e*e;if(d<bd){bd=d;bi=j}}
+      var s=S[bi];s[0]+=LAB[q];s[1]+=LAB[q+1];s[2]+=LAB[q+2];s[3]++;s[4]+=D[pts[i]*4];s[5]+=D[pts[i]*4+1];s[6]+=D[pts[i]*4+2];
+    }
+    for(j=0;j<k;j++)if(S[j][3])ctr[j]=[S[j][0]/S[j][3],S[j][1]/S[j][3],S[j][2]/S[j][3]];
+  }
+  var cl=[];
+  for(j=0;j<k;j++)if(S[j][3])cl.push({n:S[j][3],lab:ctr[j],rgb:[S[j][4]/S[j][3],S[j][5]/S[j][3],S[j][6]/S[j][3]]});
+  cl.sort(function(a,b){return b.n-a.n});
+  var thr=+$('mg').value,keep=[];
+  cl.forEach(function(a){
+    if(keep.every(function(b){var x=a.lab[0]-b.lab[0],y=a.lab[1]-b.lab[1],z=a.lab[2]-b.lab[2];return Math.sqrt(x*x+y*y+z*z)>=thr}))keep.push(a);
+  });
+  var paper=$('paper').checked;
+  PAL=keep.map(function(a,idx){var c=a.rgb.map(Math.round);return {c:c,on:!(paper&&Math.min(c[0],c[1],c[2])>232),ang:ANG[idx%8],g:100}});
+  return true;
+}
+function setMode(){
+  var s=isSpot();$('optC').hidden=s;$('optS').hidden=!s;$('ht').value=s?'s':'h';
+  $('hint').textContent=s?'Spot Color: ပုံထဲက အရောင်အဓိကများကို ရှာပြီး အရောင်တစ်ခုကို Screen တစ်ခုစီ ပြားချပ်ရိုက်ပါမယ်။ Logo၊ ပုံဆွဲအတွက် သင့်ပါတယ်။ ဓာတ်ပုံကို Spot ၄ ရောင်နဲ့ လုပ်ရင် မူရင်းနဲ့ အများကြီးကွာပါမယ် (CMYK သုံးပါ)။ အရောင်တူပေါင်းကို လျှော့ရင် အရောင်ပိုခွဲမယ်။ Halftone ဖွင့်ရင် အရောင်ကူးပြောင်းနေရာတွင် အစက်ထွက်ပါမယ်။':'CMYK: ပုံကို Cyan, Magenta, Yellow, Black ၄ ခုခွဲပြီး Halftone အစက်နဲ့ ရိုက်ပါမယ်။ ဓာတ်ပုံနဲ့ အရောင်ကူးပြောင်းမှုများတဲ့ ပုံအတွက် ဒီနည်းက မူရင်းနဲ့ အနီးဆုံးပါ။ K ပမာဏများရင် Black Screen မှာ အနက်ပိုပါပြီး အရောင် ၃ ခုမှာ နည်းပါမယ်။';
+}
+$('md').onchange=function(){
+  setMode();if(!prepped)return;
+  if(isSpot()){labAll();if(!PAL.length&&!auto())return}
+  buildPl();refresh();
+};
+$('go').onclick=function(){
+  $('go').disabled=true;$('msg').textContent='ခွဲနေပါသည်…';
+  setTimeout(function(){
+    try{prep();if(isSpot()){labAll();if(!auto())throw new Error('ပုံရိပ် မလုံလောက်ပါ')}
+      $('work').hidden=false;buildPl();refresh();$('msg').textContent='ပြီးပါပြီ။ အောက်က ထောင့်၊ ပမာဏ၊ LPI တို့ကို ပြင်ကြည့်နိုင်ပါသည်။'}
+    catch(e){$('msg').textContent='အမှား: '+e.message}
+    $('go').disabled=false;
+  },30);
+};
+function buildPl(){
+  var box=$('pl'),spot=isSpot();box.innerHTML='';
+  PL().forEach(function(p,i){
+    var r=document.createElement('div');r.className='pr';
+    var ci=document.createElement('input');ci.type='color';ci.value=hex(p.c);ci.disabled=!spot;
+    var hx=document.createElement('b');hx.textContent=spot?hex(p.c):p.n;
+    ci.oninput=function(){p.c=unhex(ci.value);hx.textContent=ci.value;sched()};
+    var lb=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=p.on;
+    cb.onchange=function(){p.on=cb.checked;sched()};lb.appendChild(cb);lb.appendChild(document.createTextNode(' ရိုက်'));
+    function num(lbl,key,min,max,step){
+      var l=document.createElement('label'),inp=document.createElement('input');inp.type='number';inp.value=p[key];inp.min=min;inp.max=max;inp.step=step;
+      inp.oninput=function(){var v=parseFloat(inp.value);if(!isNaN(v)){p[key]=v;sched()}};
+      l.appendChild(document.createTextNode(lbl+' '));l.appendChild(inp);return l;
+    }
+    var cv=document.createElement('span');cv.className='cv';cv.id='cv'+i;
+    [ci,hx,lb,num('ထောင့်°','ang',-90,180,5),num('ပမာဏ%','g',10,200,5),cv].forEach(function(n){r.appendChild(n)});
+    if(spot){var bt=document.createElement('button');bt.className='alt';bt.textContent='ဖျက်';bt.style.padding='3px 10px';
+      bt.onclick=function(){if(PAL.length<2)return;PAL.splice(i,1);buildPl();sched()};r.appendChild(bt)}
+    box.appendChild(r);
+  });
+}
+$('src').onclick=function(){};
+$('src').addEventListener('click',function(e){
+  if(!isSpot()||PAL.length>=10)return;
+  var r=this.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*W),y=Math.floor((e.clientY-r.top)/r.height*H),p=y*W+x;
+  if(!M[p])return;
+  PAL.push({c:[D[p*4],D[p*4+1],D[p*4+2]],on:true,ang:ANG[PAL.length%8],g:100});buildPl();sched();
+});
+function sched(){clearTimeout(tm);tm=setTimeout(refresh,150)}
+['ht','lpi','sh','ori','wmm','mk','bg'].forEach(function(i){$(i).oninput=sched;$(i).onchange=sched});
+
+function tonesCMYK(){
+  var bgp=+$('bg').value/100;TN=[0,1,2,3].map(function(){return new Float32Array(N)});
+  for(var p=0;p<N;p++){
+    if(!M[p])continue;
+    var r=D[p*4]/255,g=D[p*4+1]/255,b=D[p*4+2]/255,k=1-Math.max(r,g,b),ke=k*bgp,dn=1-ke;
+    TN[0][p]=Math.min(1,Math.max(0,(1-r-ke)/dn));TN[1][p]=Math.min(1,Math.max(0,(1-g-ke)/dn));
+    TN[2][p]=Math.min(1,Math.max(0,(1-b-ke)/dn));TN[3][p]=ke;
+  }
+}
+function tonesSpot(){
+  var n=PAL.length,L=PAL.map(function(p){return lab(p.c[0],p.c[1],p.c[2])});
+  TN=PAL.map(function(){return new Float32Array(N)});
+  for(var p=0;p<N;p++){
+    if(!M[p])continue;
+    var l0=LAB[p*3],l1=LAB[p*3+1],l2=LAB[p*3+2],d1=1e18,d2=1e18,i1=0,i2=-1;
+    for(var j=0;j<n;j++){var a=l0-L[j][0],b=l1-L[j][1],c=l2-L[j][2],d=a*a+b*b+c*c;
+      if(d<d1){d2=d1;i2=i1;d1=d;i1=j}else if(d<d2){d2=d;i2=j}}
+    var ts=0;
+    if(i2>=0){var s1=Math.sqrt(d1),s2=Math.sqrt(d2),t=(s1+s2)>0?s1/(s1+s2):0;ts=Math.min(1,Math.max(0,(t-.15)/.7))}
+    TN[i1][p]=1-ts;if(i2>=0&&ts>0)TN[i2][p]=ts;
+  }
+}
+function film(i,idx,dpi){
+  var P=PL()[i],T=TN[i],g=P.g/100,land=$('ori').value==='l',pw=land?297:210,ph=land?210:297,mm=dpi/25.4;
+  var X=Math.round(pw*mm),Y=Math.round(ph*mm),sc=Math.min((pw-40)*mm/W,(ph-40)*mm/H),wm=+$('wmm').value;
+  if(wm>0)sc=Math.min(sc,wm*mm/W);
+  var ox=(X-W*sc)/2,oy=(Y-H*sc)/2,ht=$('ht').value==='h',sh=$('sh').value,lpi=Math.max(10,+$('lpi').value||35);
+  var sp=dpi/lpi,th=P.ang*Math.PI/180,co=Math.cos(th),si=Math.sin(th),B=0xFF000000;
+  var c=document.createElement('canvas');c.width=X;c.height=Y;
+  var x=c.getContext('2d'),id=x.createImageData(X,Y),u=new Uint32Array(id.data.buffer);u.fill(0xFFFFFFFF);
+  function tn(sx,sy){if(sx<0||sy<0||sx>=W||sy>=H)return 0;var p=sy*W+sx;return M[p]?Math.min(1,T[p]*g):0}
+  var y0=Math.max(0,Math.floor(oy)),y1=Math.min(Y,Math.ceil(oy+H*sc)),x0=Math.max(0,Math.floor(ox)),x1=Math.min(X,Math.ceil(ox+W*sc));
+  for(var y=y0;y<y1;y++)for(var xx=x0;xx<x1;xx++){
+    var t=tn(Math.floor((xx-ox)/sc),Math.floor((y-oy)/sc));
+    if(t<=.001)continue;
+    if(!ht){if(t>=.5)u[y*X+xx]=B;continue}
+    if(t>=.999){u[y*X+xx]=B;continue}
+    var fu=(xx*co+y*si)/sp,fv=(-xx*si+y*co)/sp,iu=Math.floor(fu),iv=Math.floor(fv);
+    var u0=(iu+.5)*sp,v0=(iv+.5)*sp,cx=u0*co-v0*si,cy=u0*si+v0*co;
+    var tc=tn(Math.floor((cx-ox)/sc),Math.floor((cy-oy)/sc));if(tc<=.001)tc=t;
+    var ru=fu-iu-.5,rv=fv-iv-.5,on;
+    if(sh==='l')on=Math.abs(rv)<tc/2;
+    else if(sh==='q')on=Math.max(Math.abs(ru),Math.abs(rv))<Math.sqrt(tc)/2;
+    else if(tc<=.78)on=ru*ru+rv*rv<tc/Math.PI;
+    else{var a=.5-Math.abs(ru),b=.5-Math.abs(rv);on=!(a*a+b*b<(1-tc)/Math.PI)}
+    if(on)u[y*X+xx]=B;
+  }
+  x.putImageData(id,0,0);
+  if($('mk').checked){
+    x.strokeStyle='#000';x.fillStyle='#000';x.lineWidth=Math.max(1,.3*mm);
+    [[X/2,10*mm],[X/2,Y-10*mm],[10*mm,Y/2],[X-10*mm,Y/2]].forEach(function(p){
+      x.beginPath();x.arc(p[0],p[1],3*mm,0,7);x.moveTo(p[0]-5*mm,p[1]);x.lineTo(p[0]+5*mm,p[1]);x.moveTo(p[0],p[1]-5*mm);x.lineTo(p[0],p[1]+5*mm);x.stroke();
+    });
+    x.font=(3.5*mm)+'px sans-serif';
+    x.fillText('Screen '+(idx+1)+' '+(isSpot()?hex(P.c):P.n)+'  '+P.ang+'deg  '+(ht?lpi+'lpi':'solid'),16*mm,Y-6*mm);
+  }
+  return c;
+}
+function refresh(){
+  if(!prepped)return;
+  var spot=isSpot(),pl=PL(),n=pl.length,p,i;
+  if(spot)tonesSpot();else tonesCMYK();
+  var cnt=0;for(p=0;p<N;p++)cnt+=M[p];
+  pl.forEach(function(q,i){var s=0,T=TN[i];for(var p=0;p<N;p++)s+=T[p];q.pct=cnt?s/cnt*100:0;var e=$('cv'+i);if(e)e.textContent=q.pct.toFixed(1)+'%'});
+  var cc=$('comp');cc.width=W;cc.height=H;var cx=cc.getContext('2d'),ci=cx.createImageData(W,H);
+  for(p=0;p<N;p++){
+    var r=1,g=1,b=1;
+    if(M[p])for(i=0;i<n;i++){if(!pl[i].on)continue;var t=Math.min(1,TN[i][p]*pl[i].g/100),c=pl[i].c;r*=1-t*(1-c[0]/255);g*=1-t*(1-c[1]/255);b*=1-t*(1-c[2]/255)}
+    ci.data[p*4]=r*255;ci.data[p*4+1]=g*255;ci.data[p*4+2]=b*255;ci.data[p*4+3]=255;
+  }
+  cx.putImageData(ci,0,0);
+  $('pitch').textContent='(အစက်အကွာ ≈ '+(25.4/Math.max(10,+$('lpi').value||35)).toFixed(2)+' mm)';
+  var box=$('layers');box.innerHTML='';
+  ORDER=[];pl.forEach(function(q,i){if(q.on)ORDER.push(i)});
+  if(spot)ORDER.sort(function(a,b){return pl[b].pct-pl[a].pct});
+  ORDER.forEach(function(i,idx){
+    var d=document.createElement('div');d.className='layer';
+    d.appendChild(film(i,idx,150));
+    var m=document.createElement('div');m.className='m';
+    m.innerHTML='<div class="sw" style="background:'+hex(pl[i].c)+'"></div><div><b>Screen '+(idx+1)+' · '+(spot?hex(pl[i].c).toUpperCase():pl[i].n)+'</b><br><span style="color:var(--mute)">'+pl[i].ang+'° · '+pl[i].pct.toFixed(1)+'%</span></div>';
+    var bt=document.createElement('button');bt.className='alt';bt.textContent='PNG ဒေါင်းလုဒ်';
+    bt.onclick=function(){dl(i,idx)};
+    d.appendChild(m);d.appendChild(bt);box.appendChild(d);
+  });
+}
+function dl(i,idx){
+  $('msg').textContent='Film ထုတ်နေပါသည်…';
+  setTimeout(function(){
+    var q=PL()[i];
+    film(i,idx,+$('dpi').value).toBlob(function(bl){
+      var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='screen-'+(idx+1)+'-'+(isSpot()?hex(q.c).slice(1):q.n)+'.png';
+      document.body.appendChild(a);a.click();a.remove();$('msg').textContent='ပြီးပါပြီ။';
+    });
+  },20);
+}
+$('all').onclick=function(){ORDER.slice().forEach(function(i,idx){setTimeout(function(){dl(i,idx)},idx*2500)})};
+setMode();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,sendPasswordResetEmail,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+// ===== Firebase console ကပေးတဲ့ firebaseConfig ကို ဒီနေရာမှာ အစားထိုးပါ =====
+const firebaseConfig = {
+  apiKey: "AIzaSyAoaQsDraVGE1Dfc6yuymZtr0yhRhrgH_c",
+  authDomain: "cmyk-f0dd8.firebaseapp.com",
+  projectId: "cmyk-f0dd8",
+  appId: "1:851875105834:web:0e4b3a5f77801c1ceb8753"
+};
+// =========================================================================
+
+const g = id => document.getElementById(id);
+const say = t => { g('gmsg').textContent = t; };
+const ERR = {
+  'auth/invalid-credential':'Email သို့မဟုတ် password မှားနေပါသည်။',
+  'auth/invalid-email':'Email ပုံစံ မမှန်ပါ။',
+  'auth/missing-password':'Password ထည့်ပါ။',
+  'auth/user-disabled':'ဒီအကောင့်ကို ပိတ်ထားပါသည်။ Admin ကို ဆက်သွယ်ပါ။',
+  'auth/too-many-requests':'ကြိုးစားမှု များလွန်းပါသည်။ ခဏစောင့်ပါ။',
+  'auth/unauthorized-domain':'ဒီ domain ကို Firebase ၏ Authorized domains ထဲ မထည့်ရသေးပါ။',
+  'auth/network-request-failed':'အင်တာနက် ချိတ်ဆက်မှု မရပါ။'
+};
+const fail = e => say(ERR[e.code] || ('အမှား: ' + (e.code || e.message)));
+
+if (firebaseConfig.apiKey.startsWith('YOUR_')) {
+  say('firebaseConfig ကို မဖြည့်ရသေးပါ။ index.html ထဲက firebaseConfig နေရာကို ဖြည့်ပါ။');
+} else {
+  const auth = getAuth(initializeApp(firebaseConfig));
+  onAuthStateChanged(auth, u => {
+    if (u) {
+      g('uemail').textContent = u.email || '';
+      document.body.classList.add('authed');
+    } else {
+      document.body.classList.remove('authed');
+      say('');
+    }
+  });
+  const login = () => signInWithEmailAndPassword(auth, g('em').value.trim(), g('pw').value).catch(fail);
+  g('li').onclick = login;
+  g('pw').onkeydown = e => { if (e.key === 'Enter') login(); };
+  g('fg').onclick = () => {
+    const m = g('em').value.trim();
+    if (!m) { say('အပေါ်မှာ Email အရင်ထည့်ပါ။'); return; }
+    sendPasswordResetEmail(auth, m).then(() => say('Email မှန်ရင် Password ပြန်သတ်မှတ်ရန် စာပို့ပေးပါမည် (Spam ထဲလည်း ကြည့်ပါ)။')).catch(fail);
+  };
+  g('logout').onclick = () => signOut(auth);
+}
+</script>
+</body>
+</html>
